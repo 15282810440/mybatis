@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.TUserMapper">
+	<resultMap id="BaseResultMap" type="entity.TUser">
+
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="user_name" property="userName" jdbcType="VARCHAR" />
+		<result column="real_name" property="realName" jdbcType="VARCHAR" />
+		<result column="sex" property="sex" jdbcType="TINYINT" />
+		<result column="mobile" property="mobile" jdbcType="VARCHAR" />
+		<result column="email" property="email" jdbcType="VARCHAR" />
+		<result column="note" property="note" jdbcType="VARCHAR" />
+		<result column="position_id" property="positionId" jdbcType="INTEGER" />
+	</resultMap>
+
+
+<!--	<select id="selectAll" parameterType="java.lang.Integer" resultMap="BaseResultMap" >-->
+<!--			select id, user_name, real_name, sex, mobile, email, note, position_id  from t_user-->
+<!--			where id = #{id, jdbcType = INTEGER}-->
+<!--	</select>-->
+
+	<select id="selectAll" parameterType="java.lang.Integer" resultType="entity.TUser" >
+			select id, user_name, real_name, sex, mobile, email, note, position_id  from t_user
+			where id = #{id, jdbcType = INTEGER}
+	</select>
+
+	<insert id="insert1" parameterType="entity.TUser" useGeneratedKeys="true" keyProperty="id">
+		insert into t_user(id, user_name, real_name, sex, mobile, email, note, position_id)
+		values (#{id, jdbcType=INTEGER},
+		#{userName, jdbcType=VARCHAR},
+		#{realName, jdbcType=VARCHAR},
+		#{sex, jdbcType=TINYINT},
+		#{mobile, jdbcType=VARCHAR},
+		#{email, jdbcType=VARCHAR},
+		#{note, jdbcType=INTEGER}, #{positionId, jdbcType=INTEGER})
+	</insert>
+
+	<insert id="insert2" parameterType="entity.TUser">
+		insert into t_user(id, user_name, real_name, sex, mobile, email, note, position_id)
+		values (#{id, jdbcType=INTEGER},
+		#{userName, jdbcType=VARCHAR},
+		#{realName, jdbcType=VARCHAR},
+		#{sex, jdbcType=TINYINT},
+		#{mobile, jdbcType=VARCHAR},
+		#{email, jdbcType=VARCHAR},
+		#{note, jdbcType=INTEGER}, #{positionId, jdbcType=INTEGER})
+	</insert>
+
+	<insert id="insertIfOper" parameterType="entity.TUser">
+		insert into t_user(
+			<include refid="insertColumn"></include>
+		)
+		values (
+			<include refid="valueColumn"></include>
+		)
+	</insert>
+
+
+	<insert id="insertSelective" parameterType="entity.TUser">
+		insert into t_user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<include refid="insertColumn"></include>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<include refid="valueColumn"></include>
+		</trim>
+
+	</insert>
+
+
+	<select id="selectById" resultType="entity.TUser" parameterType="java.lang.Integer">
+		select
+		<include refid="selectColumn"></include>
+		from t_user
+		where id = #{id, jdbcType=INTEGER}
+	</select>
+
+	<sql id="insertColumn">
+		<if test="id!=null">
+			id,
+		</if>
+		<if test="userName!=null">
+			user_name,
+		</if>
+		<if test="realName!=null">
+			real_name,
+		</if>
+		<if test="sex!=null">
+			sex,
+		</if>
+		<if test="mobile!=null">
+			mobile,
+		</if>
+		<if test="email!=null">
+			email,
+		</if>
+		<if test="note!=null">
+			note,
+		</if>
+		<if test="positionId!=null">
+			position_id
+		</if>
+	</sql>
+
+	<sql id="valueColumn">
+		<if test="id!=null">
+			#{id, jdbcType=INTEGER},
+		</if>
+		<if test="userName!=null">
+			#{userName, jdbcType=VARCHAR},
+		</if>
+		<if test="realName!=null">
+			#{realName, jdbcType=VARCHAR},
+		</if>
+		<if test="sex!=null">
+			#{sex, jdbcType=TINYINT},
+		</if>
+		<if test="mobile!=null">
+			#{mobile, jdbcType=VARCHAR},
+		</if>
+		<if test="email!=null">
+			#{email, jdbcType=VARCHAR},
+		</if>
+		<if test="note!=null">
+			#{note, jdbcType=INTEGER},
+		</if>
+		<if test="positionId!=null">
+			#{positionId, jdbcType=INTEGER}
+		</if>
+	</sql>
+
+	<sql id="selectColumn">
+		id, user_name, real_name, sex, mobile, email, note, position_id
+	</sql>
+</mapper>
