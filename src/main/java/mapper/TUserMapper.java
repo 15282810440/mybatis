@@ -2,6 +2,9 @@ package mapper;
 
 
 import entity.TUser;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface TUserMapper {
 	
@@ -17,4 +20,12 @@ public interface TUserMapper {
     int insertIfOper(TUser user);
 
     int insertSelective(TUser user);
+
+    int insertForeach4Batch(@Param("userList") List<TUser> userList);
+
+    int updateIfOper(TUser user2);
+
+    List<TUser> selectUserJobs1();
+
+    List<TUser> selectUserJobs2();
 }

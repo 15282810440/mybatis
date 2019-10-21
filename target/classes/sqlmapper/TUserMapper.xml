@@ -13,6 +13,20 @@
 		<result column="position_id" property="positionId" jdbcType="INTEGER" />
 	</resultMap>
 
+	<resultMap id="userJobMap" extends="BaseResultMap" type="entity.TUser">
+		<collection property="jobs" ofType="entity.TJobHistory" >
+			<result column="user_id" property="userId" jdbcType="INTEGER"></result>
+			<result column="comp_name" property="compName" jdbcType="VARCHAR"></result>
+			<result column="years" property="years" jdbcType="INTEGER"></result>
+			<result column="title" property="title" jdbcType="VARCHAR"></result>
+		</collection>
+	</resultMap>
+
+	<resultMap id="userJobMap2" extends="BaseResultMap" type="entity.TUser">
+		<collection property="jobs" fetchType="lazy" column="id" select="mapper.TJobHistoryAnnoMapper.selectByUserId" >
+
+		</collection>
+	</resultMap>
 
 <!--	<select id="selectAll" parameterType="java.lang.Integer" resultMap="BaseResultMap" >-->
 <!--			select id, user_name, real_name, sex, mobile, email, note, position_id  from t_user-->
@@ -67,12 +81,53 @@
 
 	</insert>
 
+	<insert id="insertForeach4Batch" parameterType="java.util.List">
+		insert into t_user
+		<trim prefix="(" suffix=")">
+			<include refid="selectColumn"></include>
+		</trim>
+		values
+		<foreach collection="userList" separator="," item="user" >
+			(
+			#{user.id, jdbcType=INTEGER},
+			#{user.userName, jdbcType=VARCHAR},
+			#{user.realName, jdbcType=VARCHAR},
+			#{user.sex, jdbcType=TINYINT},
+			#{user.mobile, jdbcType=VARCHAR},
+			#{user.email, jdbcType=VARCHAR},
+			#{user.note, jdbcType=INTEGER},
+			#{user.positionId, jdbcType=INTEGER}
+			)
+		</foreach>
+	</insert>
+
+	<update id="updateIfOper" parameterType="entity.TUser">
+		update t_user
+		<set>
+			<include refid="updateColumn"></include>
+		</set>
+		where id = #{id, jdbcType=INTEGER}
+	</update>
+
 
 	<select id="selectById" resultType="entity.TUser" parameterType="java.lang.Integer">
 		select
 		<include refid="selectColumn"></include>
 		from t_user
 		where id = #{id, jdbcType=INTEGER}
+	</select>
+
+	<select id="selectUserJobs1" resultMap="userJobMap" parameterType="java.lang.Integer">
+		select
+		tu.id, tu.user_name, tu.real_name, tu.sex, tu.mobile, tu.email, tu.note, tu.position_id, tjh.user_id, tjh.comp_name, tjh.years, tjh.title
+		from t_user tu
+		inner  join t_job_history tjh on tu.id = tjh.user_id
+	</select>
+
+	<select id="selectUserJobs2" resultMap="userJobMap2" parameterType="java.lang.Integer">
+		select
+		<include refid="selectColumn"></include>
+		from t_user
 	</select>
 
 	<sql id="insertColumn">
@@ -126,6 +181,55 @@
 		</if>
 		<if test="positionId!=null">
 			#{positionId, jdbcType=INTEGER}
+		</if>
+	</sql>
+
+	<sql id="updateColumn">
+		<if test="userName!=null">
+			 user_name = #{userName, jdbcType=VARCHAR},
+		</if>
+		<if test="realName!=null">
+			 real_name = #{realName, jdbcType=VARCHAR},
+		</if>
+		<if test="sex!=null">
+			 sex = #{sex, jdbcType=TINYINT},
+		</if>
+		<if test="mobile!=null">
+			 mobile = #{mobile, jdbcType=VARCHAR},
+		</if>
+		<if test="email!=null">
+			 email = #{email, jdbcType=VARCHAR},
+		</if>
+		<if test="note!=null">
+			 note = #{note, jdbcType=INTEGER},
+		</if>
+		<if test="positionId!=null">
+			 positionId = #{positionId, jdbcType=INTEGER},
+		</if>
+	</sql>
+
+
+	<sql id="updateColumnSelective">
+		<if test="userName!=null">
+			and user_name = #{userName, jdbcType=VARCHAR}
+		</if>
+		<if test="realName!=null">
+			and real_name = #{realName, jdbcType=VARCHAR}
+		</if>
+		<if test="sex!=null">
+			and sex = #{sex, jdbcType=TINYINT}
+		</if>
+		<if test="mobile!=null">
+			and mobile = #{mobile, jdbcType=VARCHAR}
+		</if>
+		<if test="email!=null">
+			and email = #{email, jdbcType=VARCHAR}
+		</if>
+		<if test="note!=null">
+			and note = #{note, jdbcType=INTEGER}
+		</if>
+		<if test="positionId!=null">
+			and positionId = #{positionId, jdbcType=INTEGER}
 		</if>
 	</sql>
 

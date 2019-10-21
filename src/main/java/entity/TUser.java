@@ -1,6 +1,8 @@
 package entity;
 
 
+import java.util.List;
+
 public class TUser {
     private Integer id;
 
@@ -17,14 +19,18 @@ public class TUser {
     private String note;
 
     private Integer positionId;
-    
 
-//	public TUser(Integer id, String userName) {
-//		super();
-//		this.id = id;
-//		this.userName = userName;
-//	}
-//    
+    private List<TJobHistory> jobs ;
+
+//    public TUser() {
+//    }
+
+	public TUser(Integer id, String userName) {
+		super();
+		this.id = id;
+		this.userName = userName;
+	}
+
     
     
 
@@ -92,9 +98,17 @@ public class TUser {
     public void setPositionId(Integer positionId) {
         this.positionId = positionId;
     }
-    
 
-	@Override
+
+    public List<TJobHistory> getJobs() {
+        return jobs;
+    }
+
+    public void setJobs(List<TJobHistory> jobs) {
+        this.jobs = jobs;
+    }
+
+    @Override
 	public String toString() {
 		return "TUser [id=" + id + ", userName=" + userName + ", realName="
 				+ realName + ", sex=" + sex + ", mobile=" + mobile + ", email="
